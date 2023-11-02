@@ -62,6 +62,23 @@
     </style>
   </head>
   <body>
+
+{{#if index}}
+<div class="usa-alert usa-alert--info usa-alert--no-icon">
+  <div class="usa-alert__body">
+    <h4 class="usa-alert__heading">Download the data</h4>
+    <p class="usa-alert__text">
+      This website is built automatically from Amtrak data, updated about every
+      20 minutes. If you want to download the data yourself, it's available!
+      <ul>
+        <li><a href="stations.json">All of the stations</a></li>
+        <li><a href="trains.json">All of the currently active or scheduled trains</a></li>
+        <li><a href="routes.json">All of the routes with a currently active or scheduled train</a></li>
+      </ul>
+    </p>
+  </div>
+</div>{{/if}}
+
     <div class="grid-container">
       <div class="grid-row">
         <main class="grid-col-12">

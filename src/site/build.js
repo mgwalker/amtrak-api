@@ -17,28 +17,30 @@ Object.entries(helpers).forEach(([name, handler]) => {
 
 // Register all our handlebar partials so they're available in our templates.
 await fs
-  .readdir("src/templates/partials")
+  .readdir("src/site/templates/partials")
   .then((files) =>
-    files.map(async (file) => {
-      const name = path.basename(file, ".mustache");
-      const template = await fs.readFile(
-        path.join("src/templates/partials", file),
-        { encoding: "utf-8" },
-      );
-      handlebars.registerPartial(name, template);
-    }),
+    files
+      .filter((file) => file.endsWith(".handlebars"))
+      .map(async (file) => {
+        const name = path.basename(file, ".handlebars");
+        const template = await fs.readFile(
+          path.join("src/site/templates/partials", file),
+          { encoding: "utf-8" },
+        );
+        handlebars.registerPartial(name, template);
+      }),
   )
   .then((promises) => Promise.all(promises));
 
 // Load our two template files. One is for index pages (front page and route
 // pages), and the other is for a single train.
 const indexTemplate = await fs
-  .readFile("src/templates/index.mustache", {
+  .readFile("src/site/templates/index.handlebars", {
     encoding: "utf-8",
   })
   .then((template) => handlebars.compile(template));
 const trainTemplate = await fs
-  .readFile("src/templates/train.mustache", {
+  .readFile("src/site/templates/train.handlebars", {
     encoding: "utf-8",
   })
   .then((template) => handlebars.compile(template));
