@@ -46,14 +46,16 @@ export const stationStatusText = function () {
     if (this.departureScheduled) {
       stringParts.push("</li><li><strong>Expected to depart</strong>");
       stringParts.push(dateAndTimeString(departure));
-      stringParts.push("</li></ul>");
+      stringParts.push("</li>");
     }
+    stringParts.push("</ul>");
   } else if (this.status === "arrived") {
     // train is here
     const arrived = dayjs(this.arrivalActual).tz(this.timezone);
     const scheduled = dayjs(this.arrivalScheduled).tz(this.timezone);
     const delay = dayjs.duration(arrived.diff(scheduled));
 
+    stringParts.push("<ul>");
     stringParts.push("<li><strong>Arrived</strong> ");
     stringParts.push(dateAndTimeString(arrived));
     stringParts.push("</li>");

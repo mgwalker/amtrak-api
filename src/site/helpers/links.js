@@ -5,5 +5,5 @@ export const routeLink = function () {
 };
 
 export const trainLink = function () {
-  return `${slugify(this.route)}/${this.number}.html`;
+  return `${slugify(this.route)}/${this.number}-${this.id}.html`;
 };

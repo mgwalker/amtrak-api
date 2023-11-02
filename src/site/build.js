@@ -68,7 +68,10 @@ const routePages = routes.map(async (route) => {
   // Now create pages for each train on the route.
   const trainPages = route.trains.map(async (train) => {
     const page = trainTemplate(train);
-    await fs.writeFile(path.join(dir, `${train.number}.html`), page);
+    await fs.writeFile(
+      path.join(dir, `${train.number}-${train.id}.html`),
+      page,
+    );
   });
   await Promise.all(trainPages);
 });

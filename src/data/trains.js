@@ -67,6 +67,14 @@ export const getTrains = async (allStationMetadata = []) => {
       });
     }
 
+    // If any station is in "arrived" status, then there can't be any enroute
+    // stations because the train isn't enroute anywhere.
+    if (stations.some(({ status }) => status === "arrived")) {
+      stations
+        .filter(({ status }) => status === "enroute")
+        .forEach((station) => (station.status = "scheduled"));
+    }
+
     // Also, there is only one enroute station. Any stations downtrack from that
     // are just scheduled.
     const enrouteIndex = stations.findIndex(
@@ -86,6 +94,7 @@ export const getTrains = async (allStationMetadata = []) => {
 
     // And build our cleaned up train object. Also keep the raw data.
     const newTrain = {
+      id: train.ID,
       heading: train.Heading,
       number: +train.TrainNum,
       route: train.RouteName,
