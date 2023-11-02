@@ -27,7 +27,7 @@ export const parseRouteStation = (routeStation, first = false) => {
     // If the train has departed this station...
     station.status = "departed";
 
-    if (first === 0) {
+    if (first) {
       // ...and this is the first station, we only have scheduled and actual
       // departure times available, as the train kinda didn't arrive. It was
       // just... there. Spooky train.

@@ -1,0 +1,37 @@
+{{> start }}
+
+{{#routes}}
+<single-route>
+  <h1>
+    {{# ../index }}
+    <a href="{{ routeLink }}">
+    {{/ ../index }}
+    {{ route }}
+    {{# ../index }}
+    </a>
+    {{/ ../index }}
+  </h1>
+
+  {{#trains}}
+  <single-train data-status="{{ stations.0.status }}" class="margin-bottom-2 padding-bottom-2 border-bottom border-primary-light">
+    <train-number>
+      <h3><a href="{{ trainLink }}">Train #{{ number }}</a></h3>
+    </train-number>
+    <train-track class="horizontal {{ trainTrackColor stations }} margin-bottom-1">
+    {{#each stations }}
+      <train-station class="flex-auto" data-status="{{ status }}">
+        <station-dot class="{{ stationColor }}"></station-dot>
+      </train-station>
+      {{# unless @last }}
+      <station-spacer class="flex-fill {{ spacerColor }}"></station-spacer>
+      {{/ unless }}
+    {{/ each }}
+    </train-track>
+    {{ trainStartStop }}
+  </single-train>
+  {{/trains}}
+
+</single-route>
+{{/routes}}
+
+{{> end }}

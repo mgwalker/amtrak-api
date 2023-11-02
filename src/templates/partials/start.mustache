@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="https://fonts.cdnfonts.com/css/public-sans" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/uswds/3.6.1/css/uswds.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/uswds/3.6.1/js/uswds-init.min.js" integrity="sha512-O4/iaC7XNMEYqktWqYtH6Rg++++GZAdUMITJVzu0D1X4ckQyXHJOoC4SC4Ivwsr8YMTjhSnDxem0Ac62IQuG1w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/uswds/3.6.1/js/uswds.min.js" integrity="sha512-gT5GVKxABilDNB0ZN35kjkvYy4GdEpeyuRlf4LSfWEF1jw1ajcFR4U298H7Hu3FgO+pRjbGLAbxzAE5lyvQxuA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <style type="text/css">
+      html {
+        font-family: "Public Sans";
+      }
+
+      single-train {
+        display: block;
+      }
+
+      train-track {
+        display: flex;
+
+        &.horizontal {
+          border-radius: 2rem;
+          height: 1rem;
+
+          & train-station {
+            & station-dot {
+              margin-top: -.25rem;
+            }
+          }
+
+          & station-spacer {
+            margin: 0 -0.5rem;
+          }
+        };
+
+        &.vertical {
+          width: 1rem;
+          height: 100%;
+
+          & train-station {
+            & station-dot {
+              margin-left: -.25rem;
+            }
+          }
+
+          & station-spacer {
+            margin: -0.5rem 0;
+          }
+        }
+
+        & train-station {
+          display: block;
+
+          & station-dot {
+            border-radius: 2rem;
+            display: block;
+            height: 1.5rem;
+            width: 1.5rem;
+            background-color: red;
+          }
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="grid-container">
+      <div class="grid-row">
+        <main class="grid-col-12">

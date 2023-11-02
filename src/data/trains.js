@@ -53,7 +53,30 @@ export const getTrains = async (allStationMetadata = []) => {
           // And finally, keep the raw data.
           _raw: stationData,
         };
+      })
+      // And clear out this CBN station. No idea what it is, but there's no
+      // associated CBN station metadata, and I believe I saw this somewhere on
+      // the Amtrak site as well.
+      .filter(({ code }) => code !== "CBN");
+
+    // If the first station is scheduled, all stations are scheduled, regardless
+    // of the prior logic. So go ahead and fix that up.
+    if (stations[0].status === "scheduled") {
+      stations.forEach((station) => {
+        station.status = "scheduled";
       });
+    }
+
+    // Also, there is only one enroute station. Any stations downtrack from that
+    // are just scheduled.
+    const enrouteIndex = stations.findIndex(
+      ({ status }) => status === "enroute",
+    );
+    if (enrouteIndex >= 0) {
+      stations.slice(enrouteIndex + 1).forEach((station) => {
+        station.status = "scheduled";
+      });
+    }
 
     // Now that we've turned all those weird StationDD properties into a single
     // sorted parsed array, we can delete them.

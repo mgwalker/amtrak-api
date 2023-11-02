@@ -1,7 +1,9 @@
+import customParseFormat from "dayjs/plugin/customParseFormat.js";
 import dayjs from "dayjs";
 import timezone from "dayjs/plugin/timezone.js";
 import utc from "dayjs/plugin/utc.js";
 
+dayjs.extend(customParseFormat);
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
@@ -25,7 +27,11 @@ export const getTimezoneFromCharacter = (tzIn) => {
 };
 
 export const parseDate = (uglyDate, timezone = "America/New_York") => {
-  // DayJS can parse the ugly dates. Give it a timezone and then turn that
-  // puppy into an ISO8601 UTC string.
-  return dayjs.tz(uglyDate, timezone).toISOString();
+  if (!uglyDate) {
+    return null;
+  }
+
+  // DayJS can parse the ugly dates if we tell it what the format is. Give it a
+  // timezone and then turn that puppy into an ISO8601 UTC string.
+  return dayjs.tz(uglyDate, "MM/DD/YYYY hh:mm:ss", timezone).toISOString();
 };

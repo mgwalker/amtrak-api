@@ -1,0 +1,32 @@
+{{> start }}
+
+<h1>{{ route }} Train #{{ number }}</h1>
+
+<div class="grid-container margin-bottom-2">
+  {{#each stations }}
+  <div class="grid-row">
+    <div class="grid-col-1">
+    <train-track class="vertical flex-column {{#if @first}}radius-top-pill{{/if}} {{#if @last}}radius-bottom-pill{{/if}} {{ trainTrackColor ../stations }}">
+      {{# unless @first }}
+      <station-spacer class="flex-fill {{ spacerColor ../stations @index }}"></station-spacer>
+      {{/ unless }}
+      <train-station class="flex-auto">
+        <station-dot class="{{ stationColor }}"></station-dot>
+      </train-station>
+      {{# unless @last }}
+      <station-spacer class="flex-fill {{ spacerColor }}"></station-spacer>
+      {{/ unless }}
+    </train-track>
+    </div>
+    <div class="grid-col-11">
+      <h3 class="margin-0 padding-0">{{ station.name }}</h3>
+      <div class="margin-top-1">
+        <span class="usa-tag {{ stationColor }}">{{ status }}</span>
+      </div>
+      {{ stationStatusText ../stations }}
+    </div>
+  </div>
+  {{/ each }}
+</div>
+
+{{> end }}

@@ -24,11 +24,8 @@ jobs:
       - name: install dependencies
         run: npm ci
 
-      - name: create an output directory
-        run: mkdir _site
-
-      - name: build pages
-        run: node src/main.js
+      - name: build data
+        run: npm run site
 
       - name: upload artifacts
         uses: actions/upload-pages-artifact@v1

@@ -7,6 +7,11 @@
   },
   "prettier": {},
   "dependencies": {
-    "dayjs": "^1.11.10"
+    "dayjs": "^1.11.10",
+    "handlebars": "^4.7.8"
+  },
+  "scripts": {
+    "site": "npm run update && node src/site/build.js",
+    "update": "rm -rf _site && mkdir -p _site && node src/data/main.js"
   }
 }
