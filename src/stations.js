@@ -1,11 +1,16 @@
 import { parse } from "./crypto.js";
 
 export const getStations = async () => {
+  // Fetch the raw data.
   const rawData = await fetch(
     "https://maps.amtrak.com/services/MapDataService/stations/trainStations",
   ).then((response) => response.text());
 
-  const stations = parse(rawData).StationsDataResponse.features.map(
+  // Decrypt it.
+  const stations = await parse(rawData);
+
+  // Map it into a little bit cleaner structure, and keep the original raw data
+  return stations.StationsDataResponse.features.map(
     ({ properties: station }) => {
       return {
         code: station.Code,
@@ -14,9 +19,11 @@ export const getStations = async () => {
         address2: station.Address2,
         city: station.City,
         state: station.State,
+        lat: station.lat,
+        lon: station.lon,
         zip: station.Zipcode,
+        _raw: station,
       };
     },
   );
-  return stations;
 };

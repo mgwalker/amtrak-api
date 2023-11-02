@@ -1,22 +1,57 @@
 import { createDecipheriv, pbkdf2Sync } from "node:crypto";
 
-// These values are hardcoded.
-const CRYPTO_SALT = Buffer.from("9a3686ac", "hex");
-const CRYPTO_IV = Buffer.from("c6eb2f7f5c4740c1a2f708fefd947d39", "hex");
-const MASTER_SEGMENT = 88;
-const PUBLIC_KEY = "69af143c-e8cf-47f8-bf09-fc1f61e5cc33";
+// The public key (used to encrypt private key passwords), key derivation salt,
+// and AES initialization vectors are all provided by the API. Fetch them.
+export const cryptoInitializers = (async () => {
+  // First, the index of the public key is the sum of all zoom levels for all
+  // routes, so let's get that real quick.
+  const masterZoom = await fetch(
+    "https://maps.amtrak.com/rttl/js/RoutesList.json",
+  )
+    .then((r) => r.json())
+    .then((list) =>
+      list.reduce((sum, { ZoomLevel }) => sum + (ZoomLevel ?? 0), 0),
+    );
 
-export const decrypt = (data, key = PUBLIC_KEY) => {
+  // Then fetch the data containing our values.
+  const cryptoData = await fetch(
+    "https://maps.amtrak.com/rttl/js/RoutesList.v.json",
+  ).then((r) => r.json());
+
+  // And pull them out.
+  return {
+    PUBLIC_KEY: cryptoData.arr[masterZoom],
+    // The salt and IV indices are equal to the length of any given value in the
+    // array. So if salt[0] is 8 bytes long, then our value is at salt[8]. Etc.
+    CRYPTO_SALT: Buffer.from(cryptoData.s[cryptoData.s[0].length], "hex"),
+    CRYPTO_IV: Buffer.from(cryptoData.v[cryptoData.v[0].length], "hex"),
+  };
+})();
+
+// The "private key" embedded in each response is really more of a password used
+// to derive a key. Anyway, it's 64 bytes long. Base64 decoded and padded, it
+// comes out to 88 bytes. And that's where this number comes from.
+const MASTER_SEGMENT = 88;
+
+export const decrypt = async (data, keyDerivationPassword) => {
+  const { PUBLIC_KEY, CRYPTO_SALT, CRYPTO_IV } = await cryptoInitializers;
+
   // The content is base64 encoded, so decode that to binary first.
   const ciphertext = Buffer.from(data, "base64");
 
-  // Our local key is a hash of the input key and the hardcoded salt, via
-  // PBKDF2 with SHA1, with 1,000 iterations and a 16-byte (128 bit) output.
-  const localKey = pbkdf2Sync(key, CRYPTO_SALT, 1_000, 16, "sha1");
+  // The actual key is derived from the derivation password using the salt from
+  // the API and PBKDF2 with SHA1, with 1,000 iterations and a 16-byte output.
+  const key = pbkdf2Sync(
+    keyDerivationPassword ?? PUBLIC_KEY,
+    CRYPTO_SALT,
+    1_000,
+    16,
+    "sha1",
+  );
 
   // It's encrypted with AES-128-CBC using the generated key above and the
   // hardcoded initialization vector.
-  const decipher = createDecipheriv("aes-128-cbc", localKey, CRYPTO_IV);
+  const decipher = createDecipheriv("aes-128-cbc", key, CRYPTO_IV);
 
   // The Node library works in chunks, so we'll get some stuff out as soon as we
   // update the decipher, and we have to get the rest out by calling .final().
@@ -27,17 +62,20 @@ export const decrypt = (data, key = PUBLIC_KEY) => {
   return text.join("");
 };
 
-export const parse = (data) => {
+export const parse = async (data) => {
+  // The encrypted data is at the beginning. The last 88 bytes are the base64
+  // encoded private key password. Slice those two out.
   const ciphertext = data.slice(0, -MASTER_SEGMENT);
   const privateKeyCipher = data.slice(-MASTER_SEGMENT);
 
-  const [privateKey] = decrypt(privateKeyCipher).split("|");
-
-  return JSON.parse(decrypt(ciphertext, privateKey));
-};
-
-await fetch("https://maps.amtrak.com/rttl/js/RoutesList.json")
-  .then((r) => r.json())
-  .then((list) =>
-    list.reduce((sum, { ZoomLevel }) => sum + (ZoomLevel ?? 0), 0),
+  // The private key password is encrypted with the public key provided by the
+  // API. It's a pipe-delimited string, but only the first segment is useful.
+  // We can toss out the rest.
+  const [privateKey] = await decrypt(privateKeyCipher).then((data) =>
+    data.split("|"),
   );
+
+  // The actual data is encrypted with the private key. The result is always
+  // JSON (for our purposes), so go ahead and parse that.
+  return JSON.parse(await decrypt(ciphertext, privateKey));
+};
