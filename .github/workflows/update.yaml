@@ -27,7 +27,7 @@ jobs:
         run: mkdir _site
 
       - name: build pages
-        run: node main.js
+        run: node src/main.js
 
       - name: upload artifacts
         uses: actions/upload-pages-artifact@v1
