@@ -1,0 +1,38 @@
+name: update train data
+
+on:
+  schedule:
+    - cron: "*/20 * * * *"
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  rebuild:
+    name: deploy the site
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: install dependencies
+        run: npm ci
+
+      - name: create an output directory
+        run: mkdir _site
+
+      - name: build pages
+        run: node main.js
+
+      - name: upload artifacts
+        uses: actions/upload-pages-artifact@v1
+        with:
+          path: _site
+
+      - name: deploy
+        uses: actions/deploy-pages@v1

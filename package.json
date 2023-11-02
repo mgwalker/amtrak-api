@@ -1,0 +1,12 @@
+{
+  "name": "@mgwalker/amtrak-api",
+  "license": "ISC",
+  "type": "module",
+  "devDependencies": {
+    "prettier": "^3.0.3"
+  },
+  "prettier": {},
+  "dependencies": {
+    "dayjs": "^1.11.10"
+  }
+}
