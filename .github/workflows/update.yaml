@@ -1,6 +1,7 @@
 name: update train data
 
 on:
+  push:
   schedule:
     - cron: "*/20 * * * *"
 
