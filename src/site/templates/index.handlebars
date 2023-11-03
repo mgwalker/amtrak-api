@@ -12,10 +12,10 @@
     {{/ ../index }}
   </h1>
 
-  {{#trains}}
+  {{#each trains}}
   <single-train data-status="{{ stations.0.status }}" class="margin-bottom-2 padding-bottom-2 border-bottom border-primary-light">
     <train-number>
-      <h3><a href="{{ trainLink }}">Train #{{ number }}</a></h3>
+      <h3><a href="{{ trainLink ../../index }}">Train #{{ number }}</a></h3>
     </train-number>
     <train-track class="horizontal {{ trainTrackColor stations }} margin-bottom-1">
     {{#each stations }}
@@ -29,7 +29,7 @@
     </train-track>
     {{ trainStartStop }}
   </single-train>
-  {{/trains}}
+  {{/each}}
 
 </single-route>
 {{/routes}}
