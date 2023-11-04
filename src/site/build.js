@@ -174,7 +174,7 @@ const routes = JSON.parse(
           station.info.push("This train is running behind schedule.");
           if (station.delay.arrival) {
             station.info.push(
-              `The train will arrive about ${station.delay.arrival} late`,
+              `It will arrive about ${station.delay.arrival} late`,
             );
           }
 
@@ -184,7 +184,7 @@ const routes = JSON.parse(
 
           if (station.delay.departure) {
             if (!station.delay.arrival) {
-              station.info.push("The train ");
+              station.info.push("It ");
             }
             station.info.push(
               ` will depart about ${station.delay.departure} late.`,
