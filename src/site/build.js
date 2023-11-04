@@ -284,6 +284,9 @@ const routes = JSON.parse(
       train.info = info.join("");
     }
 
+    train.from = train.stations[0].name;
+    train.to = train.stations.slice(-1).pop().name;
+
     return train;
   });
 
