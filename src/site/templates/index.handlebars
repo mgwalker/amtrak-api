@@ -3,31 +3,24 @@
 {{#routes}}
 <single-route>
   <h1>
-    {{# ../index }}
-    <a href="{{ routeLink }}">
-    {{/ ../index }}
-    {{ route }}
-    {{# ../index }}
-    </a>
-    {{/ ../index }}
+    {{#if ../index }}<a href="{{ url }}">{{/if}}{{ name }}{{#if ../index }}</a>{{/if}}
   </h1>
 
   {{#each trains}}
-  <single-train data-status="{{ stations.0.status }}" class="margin-bottom-2 padding-bottom-2 border-bottom border-primary-light">
-    <train-number>
-      <h3><a href="{{ trainLink ../../index }}">Train #{{ number }}</a></h3>
-    </train-number>
-    <train-track class="horizontal {{ trainTrackColor stations }} margin-bottom-1">
+  <single-train class="margin-bottom-2 padding-bottom-2 border-bottom border-primary-light">
+    <h3><a href="{{ url }}">Train #{{ number }}</a><span class="usa-tag margin-left-2 {{ tag.bg }} {{ tag.color }}">{{ tag.text }}</span></h3>
+
+    <train-track class="horizontal {{ trackColor }} margin-bottom-1">
     {{#each stations }}
-      <train-station class="flex-auto" data-status="{{ status }}">
-        <station-dot class="{{ stationColor }}"></station-dot>
+      <train-station class="flex-auto">
+        <station-dot class="{{ dotColor }}"></station-dot>
       </train-station>
       {{# unless @last }}
-      <station-spacer class="flex-fill {{ spacerColor }}"></station-spacer>
+      <station-spacer class="flex-fill {{ spacerColors.after }}"></station-spacer>
       {{/ unless }}
     {{/ each }}
     </train-track>
-    {{ trainStartStop }}
+    {{ info }}
   </single-train>
   {{/each}}
 

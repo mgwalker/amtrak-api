@@ -6,24 +6,42 @@
   {{#each stations }}
   <div class="grid-row">
     <div class="grid-col-1">
-    <train-track class="vertical flex-column {{#if @first}}radius-top-pill{{/if}} {{#if @last}}radius-bottom-pill{{/if}} {{ trainTrackColor ../stations }}">
+    <train-track class="vertical flex-column {{#if @first}}radius-top-pill{{/if}} {{#if @last}}radius-bottom-pill{{/if}} {{ ../trackColor }}">
       {{# unless @first }}
-      <station-spacer class="flex-fill {{ spacerColor ../stations @index }}"></station-spacer>
+      <station-spacer class="flex-fill {{ spacerColors.before }}"></station-spacer>
       {{/ unless }}
       <train-station class="flex-auto">
-        <station-dot class="{{ stationColor }}"></station-dot>
+        <station-dot class="{{ dotColor }}"></station-dot>
       </train-station>
       {{# unless @last }}
-      <station-spacer class="flex-fill {{ spacerColor }}"></station-spacer>
+      <station-spacer class="flex-fill {{ spacerColors.after }}"></station-spacer>
       {{/ unless }}
     </train-track>
     </div>
     <div class="grid-col-11">
-      <h3 class="margin-0 padding-0">{{ station.name }} ({{ station.code }})</h3>
+      <h3 class="margin-0 padding-0">{{ name }} ({{ code }})</h3>
       <div class="margin-top-1">
-        <span class="usa-tag {{ stationColor }}">{{ status }}</span>
+        <span class="usa-tag {{ tag.bg }} {{ tag.color }}">{{ tag.text }}</span>
       </div>
-      {{ stationStatusText ../stations }}
+      <ul>
+        {{#if arrival }}
+        <li>
+          <strong>
+            {{#if arrivalKnown }}Arrived{{/if}}{{#unless arrivalKnown }}Expected to arrive{{/unless}}
+          </strong>
+          on {{ arrival }}
+        </li>
+        {{/if}}
+        {{#if departure }}
+        <li>
+          <strong>
+            {{#if departureKnown }}Departed{{/if}}{{#unless departureKnown }}Expected to depart{{/unless}}
+          </strong>
+          on {{ departure }}
+        </li>
+        {{/if}}
+      </ul>
+
     </div>
   </div>
   {{/ each }}
