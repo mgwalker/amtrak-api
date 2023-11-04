@@ -151,7 +151,7 @@ const routes = JSON.parse(
             stationInfo.arrivalScheduled ??
             false;
           if (t) {
-            return dayAndTime(t);
+            return dayAndTime(t, stationInfo.timezone);
           }
           return false;
         })(),
@@ -162,7 +162,7 @@ const routes = JSON.parse(
             stationInfo.departureScheduled ??
             false;
           if (t) {
-            return dayAndTime(t);
+            return dayAndTime(t, stationInfo.timezone);
           }
           return false;
         })(),
