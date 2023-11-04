@@ -186,7 +186,9 @@ const routes = JSON.parse(
             if (!station.delay.arrival) {
               station.info.push("The train ");
             }
-            station.info.push(` depart about ${station.delay.departure} late.`);
+            station.info.push(
+              ` will depart about ${station.delay.departure} late.`,
+            );
           }
         }
         station.info = station.info.join(" ");
