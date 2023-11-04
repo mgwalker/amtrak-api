@@ -6,6 +6,46 @@ import { dayjs, slugify } from "./utils.js";
 
 dotenv.config();
 
+const stationDelay = (station) => {
+  const delay = { arrival: false, departure: false };
+
+  if (
+    station.arrivalScheduled &&
+    (station.arrivalActual || station.arrivalEstimated)
+  ) {
+    // The train can't have a delayed arrival if there's not a scheduled arrival
+    // or at least one of actual or estimated arrival.
+    const scheduled = dayjs(station.arrivalScheduled).tz(station.timezone);
+    const actual = dayjs(station.arrivalActual ?? station.arrivalEstimated).tz(
+      station.timezone,
+    );
+
+    const delayTime = dayjs.duration(actual.diff(scheduled));
+    if (delayTime.asMinutes() > 10) {
+      delay.arrival = delayTime.humanize();
+    }
+  }
+
+  if (
+    station.departureScheduled &&
+    (station.departureActual || station.departureEstimated)
+  ) {
+    const scheduled = dayjs(station.departureScheduled).tz(station.timezone);
+    const actual = dayjs(
+      station.departureActual ?? station.departureEstimated,
+    ).tz(station.timezone);
+
+    const delayTime = dayjs.duration(actual.diff(scheduled));
+    if (delayTime.asMinutes() > 10) {
+      delay.departure = delayTime.humanize();
+    }
+  }
+
+  if (station.departureScheduled) {
+  }
+  return delay;
+};
+
 const dayAndTime = (str, tz) => {
   const ts = dayjs(str).tz(tz);
   return `${ts.format("dddd")} at ${ts.format("h:mm A")}`;
@@ -19,6 +59,7 @@ const TAG_BG_COLORS = new Map([
   ["enroute", "bg-green"],
   ["on time", "bg-green"],
   ["arrived", "bg-gold"],
+  ["delayed", "bg-secondary-dark"],
 ]);
 
 const TAG_TEXT_COLORS = new Map([
@@ -27,6 +68,7 @@ const TAG_TEXT_COLORS = new Map([
   ["enroute", "text-white"],
   ["on time", "text-white"],
   ["arrived", "text-black"],
+  ["delayed", "text-white"],
 ]);
 
 const STATION_COLORS = new Map([
@@ -72,6 +114,8 @@ const routes = JSON.parse(
         arrivalKnown:
           stationInfo.status === "arrived" || stationInfo.status === "departed",
         departureKnown: stationInfo.status === "departed",
+
+        delay: stationDelay(stationInfo),
 
         tag: {
           text: stationInfo.status,
@@ -155,29 +199,41 @@ const routes = JSON.parse(
         };
       })();
 
+      if (previous?.delay.departure || next?.delay.arrival) {
+        train.tag.text = "delayed";
+        train.tag.bg = TAG_BG_COLORS.get("delayed");
+        train.tag.color = TAG_TEXT_COLORS.get("delayed");
+      }
+
       const info = [
         previous.status === "arrived" ? "Arrived at " : "Departed from ",
         previous.name,
-        " on ",
-        previous.arrival,
       ];
+      if (previous.status === "arrived" && previous.delay.arrival) {
+        info.push(" about ", previous.delay.arrival, " late");
+      }
+      if (previous.status === "departed" && previous.delay.departure) {
+        info.push(" about ", previous.delay.departure, " late");
+      }
+
+      info.push(" on ", previous.arrival);
 
       if (previous.status === "departed") {
-        info.push(
-          " and is scheduled to arrive at ",
-          next.name,
-          " on ",
-          next.arrival,
-        );
+        info.push(" and is scheduled to arrive at ", next.name);
+        if (next.delay.arrival) {
+          info.push(" about ", next.delay.arrival, " late");
+        }
+        info.push(" on ", next.arrival);
       } else if (next) {
-        info.push(
-          ". Expected to depart on ",
-          previous.departure,
-          " and arrive at ",
-          next.name,
-          " on ",
-          next.arrival,
-        );
+        info.push(". Expected to depart");
+        if (previous.delay.departure) {
+          info.push(" about ", previous.delay.departure, " late");
+        }
+        info.push(" on ", previous.departure, " and arrive at ", next.name);
+        if (next.delay.arrival) {
+          info.push(" about ", next.delay.arrival, " late");
+        }
+        info.push(" on ", next.arrival);
       }
       info.push(".");
 
