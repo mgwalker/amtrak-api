@@ -2,9 +2,26 @@ import dotenv from "dotenv";
 import fs from "node:fs/promises";
 import path from "node:path";
 import handlebars from "handlebars";
-import { dayjs, slugify } from "./utils.js";
+import dayjs from "dayjs";
+import duration from "dayjs/plugin/duration.js";
+import relativeTime from "dayjs/plugin/relativeTime.js";
+import timezone from "dayjs/plugin/timezone.js";
+import utc from "dayjs/plugin/utc.js";
+
+dayjs.extend(duration);
+dayjs.extend(relativeTime);
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 dotenv.config();
+
+const slugify = (str) =>
+  str
+    .toLowerCase()
+    .trim()
+    .replace(/[\s_]/g, "-")
+    .replace(/[^a-z0-9-_]/g, "")
+    .replace(/-{2,}/g, "-");
 
 const stationDelay = (station) => {
   const delay = { arrival: false, departure: false };
@@ -30,6 +47,7 @@ const stationDelay = (station) => {
     station.departureScheduled &&
     (station.departureActual || station.departureEstimated)
   ) {
+    // Same kinda logic for departure delays. :)
     const scheduled = dayjs(station.departureScheduled).tz(station.timezone);
     const actual = dayjs(
       station.departureActual ?? station.departureEstimated,
@@ -149,6 +167,30 @@ const routes = JSON.parse(
           return false;
         })(),
       };
+
+      if (station.status === "enroute" || station.status === "scheduled") {
+        station.info = [];
+        if (station.delay.arrival || station.delay.departure) {
+          station.info.push("This train is running behind schedule.");
+          if (station.delay.arrival) {
+            station.info.push(
+              `The train will arrive about ${station.delay.arrival} late`,
+            );
+          }
+
+          if (station.delay.arrival && station.delay.departure) {
+            station.info.push(" and ");
+          }
+
+          if (station.delay.departure) {
+            if (!station.delay.arrival) {
+              station.info.push("The train ");
+            }
+            station.info.push(` depart about ${station.delay.departure} late.`);
+          }
+        }
+        station.info = station.info.join(" ");
+      }
 
       return station;
     });
