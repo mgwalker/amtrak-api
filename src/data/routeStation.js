@@ -23,7 +23,7 @@ export const parseRouteStation = (routeStation, first = false) => {
     station.status = "scheduled";
     station.departureEstimated = parseDate(routeStation.estdep, timezone);
     station.departureScheduled = parseDate(routeStation.schdep, timezone);
-  } else if (!!routeStation.postdep) {
+  } else if (routeStation.postdep) {
     // If the train has departed this station...
     station.status = "departed";
 
@@ -41,7 +41,7 @@ export const parseRouteStation = (routeStation, first = false) => {
       station.departureActual = parseDate(routeStation.postdep, timezone);
       station.departureScheduled = parseDate(routeStation.schdep, timezone);
     }
-  } else if (!!routeStation.postarr) {
+  } else if (routeStation.postarr) {
     // If the has not departed but HAS arrived, then the train is currently
     // sitting at the station. We can know when it was supposed to arrive, when
     // it did, when it is scheduled to leave, and when they think it'll actually

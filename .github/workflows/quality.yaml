@@ -1,0 +1,74 @@
+name: code quality
+
+on: [pull_request]
+
+jobs:
+  lint:
+    name: lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: npm
+
+      - name: install dependencies
+        run: npm ci
+
+      - name: add eslint output matcher
+        run: echo "::add-matcher::${{ github.workspace }}/.github/matchers/eslint.json"
+
+      - name: lint
+        run: npm run test:lint
+
+  test:
+    name: unit test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: npm
+
+      - name: install dependencies
+        run: npm ci
+
+      - name: add eslint output matcher
+        run: echo "::add-matcher::${{ github.workspace }}/.github/matchers/tap.json"
+
+      - name: run tests
+        run: npm run test:test
+
+      - name: store coverage output
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage
+          path: .tap
+          retention-days: 1
+
+  # She just gon' disable coverage reporting for right now because I don't want
+  # to look at any more lcov reporters.
+  # coverage:
+  #   name: code coverage
+  #   runs-on: ubuntu-latest
+  #   needs: [test]
+  #   steps:
+  #     - name: install lcov
+  #       uses: hrishikesh-kadam/setup-lcov@v1
+
+  #     - name: get coverage output
+  #       uses: actions/download-artifact@v3
+  #       with:
+  #         name: coverage
+
+  #     - name: Report code coverage
+  #       uses: zgosalvez/github-actions-report-lcov@v3
+  #       with:
+  #         coverage-files: ${{ github.workspace }}/.tap/report/lcov.info
+  #         minimum-coverage: 90
+  #         github-token: ${{ secrets.GITHUB_TOKEN }}
+  #         update-comment: true
