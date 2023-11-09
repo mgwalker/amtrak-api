@@ -45,6 +45,26 @@ tap.test("trains fetcher", async (trainTests) => {
       });
   });
 
+  trainTests.test("a predeparture train", async (test) => {
+    cryptoParse.resolves({
+      features: [
+        {
+          properties: {
+            ID: "bad train",
+            TrainNum: "333",
+            Station4: null,
+            Station2: null,
+            Station1: null,
+            Station3: null,
+          },
+        },
+      ],
+    });
+
+    const out = await getTrains([], { fetch, cryptoParse });
+    test.same(out, []);
+  });
+
   trainTests.test("a scheduled train", async (test) => {
     cryptoParse.resolves(scheduled);
 
