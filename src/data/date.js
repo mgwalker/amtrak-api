@@ -26,12 +26,12 @@ export const getTimezoneFromCharacter = (tzIn) => {
   }
 };
 
-export const parseDate = (uglyDate, timezone = "America/New_York") => {
+export const parseDate = (uglyDate, tz = "America/New_York") => {
   if (!uglyDate) {
     return null;
   }
 
   // DayJS can parse the ugly dates if we tell it what the format is. Give it a
   // timezone and then turn that puppy into an ISO8601 UTC string.
-  return dayjs.tz(uglyDate, "MM/DD/YYYY hh:mm:ss", timezone).toISOString();
+  return dayjs.tz(uglyDate, "MM/DD/YYYY hh:mm:ss", tz).toISOString();
 };

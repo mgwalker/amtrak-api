@@ -1,0 +1,47 @@
+{
+  "extends": ["airbnb-base", "prettier"],
+  "rules": {
+    // Node.js requires that import statements include a file extension in order
+    // to properly resolve modules, similarly to how it works in browser
+    // environments. In fact, the only places it doesn't work that way is with
+    // precompilers like Babel, etc.
+    "import/extensions": ["error", "always"],
+
+    // This rule says that a file with a single export should only export
+    // default, a rule I generally disagree with being in the linter because
+    // what to export is contextual. There's not a good hard rule.
+    "import/prefer-default-export": [0],
+
+    // In general, I agree with this rule, but treating parameters as immutable
+    // is a bridge too far for me.
+    "no-param-reassign": ["error", { "props":false }],
+
+    // This rule is copied from the Airbnb config, but we remove the prohibition
+    // on ForOf statements because they are natively supported in Node.js. The
+    // remaining prohibitions are still good, though, so we don't want to just
+    // completely disable the rule.
+    "no-restricted-syntax": [
+      "error",
+      {
+        "selector": "ForInStatement",
+        "message":
+          "for..in loops iterate over the entire prototype chain, which is virtually never what you want. Use Object.{keys,values,entries}, and iterate over the resulting array."
+      },
+      {
+        "selector": "LabeledStatement",
+        "message":
+          "Labels are a form of GOTO; using them makes code confusing and hard to maintain and understand."
+      },
+      {
+        "selector": "WithStatement",
+        "message":
+          "`with` is disallowed in strict mode because it makes code impossible to predict and optimize."
+      }
+    ]
+  },
+  "env": {
+    "es2023": true,
+    "node": true
+  },
+  "parserOptions": { "ecmaVersion": 2023 }
+}

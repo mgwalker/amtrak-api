@@ -59,8 +59,6 @@ const stationDelay = (station) => {
     }
   }
 
-  if (station.departureScheduled) {
-  }
   return delay;
 };
 
@@ -336,13 +334,13 @@ const routePages = routes.map(async (route) => {
   await fs.mkdir(route.filepath, { recursive: true });
 
   // Build the route index page and write it out.
-  const page = indexTemplate({ routes: [route] });
-  await fs.writeFile(path.join(route.filepath, "index.html"), page);
+  const routePage = indexTemplate({ routes: [route] });
+  await fs.writeFile(path.join(route.filepath, "index.html"), routePage);
 
   // Now create pages for each train on the route.
   const trainPages = route.trains.map(async (train) => {
-    const page = trainTemplate(train);
-    await fs.writeFile(path.join(train.filepath), page);
+    const trainPage = trainTemplate(train);
+    await fs.writeFile(path.join(train.filepath), trainPage);
   });
   await Promise.all(trainPages);
 });

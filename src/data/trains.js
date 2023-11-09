@@ -1,14 +1,17 @@
 import { parse } from "./crypto.js";
 import { parseRouteStation } from "./routeStation.js";
 
-export const getTrains = async (allStationMetadata = []) => {
+export const getTrains = async (
+  allStationMetadata,
+  { fetch = global.fetch, cryptoParse = parse } = {},
+) => {
   // Fetch the train data. This is an encrypted blob.
   const rawData = await fetch(
     "https://maps.amtrak.com/services/MapDataService/trains/getTrainsData",
   ).then((response) => response.text());
 
   // Decrypt all in one swoop.
-  const trains = await parse(rawData);
+  const trains = await cryptoParse(rawData);
 
   // Now clean up the train data.
   return trains.features.map(({ properties: train }) => {
@@ -72,7 +75,9 @@ export const getTrains = async (allStationMetadata = []) => {
     if (stations.some(({ status }) => status === "arrived")) {
       stations
         .filter(({ status }) => status === "enroute")
-        .forEach((station) => (station.status = "scheduled"));
+        .forEach((station) => {
+          station.status = "scheduled";
+        });
     }
 
     // Also, there is only one enroute station. Any stations downtrack from that
