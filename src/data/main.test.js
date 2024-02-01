@@ -6,7 +6,7 @@ import { main } from "./main.js";
 const sandbox = sinon.createSandbox();
 
 tap.test("main module", async (t) => {
-  const fs = { writeFile: sandbox.spy() };
+  const fs = { mkdir: sandbox.spy(), writeFile: sandbox.spy() };
   const getStations = sandbox.stub();
   const getTrains = sandbox.stub();
 
@@ -56,10 +56,39 @@ tap.test("main module", async (t) => {
 
     await main({ fs, getStations, getTrains });
 
+    t.ok(fs.mkdir.calledWith("_site/routes", { recursive: true }));
     t.ok(
       fs.writeFile.calledWith("_site/stations.json", JSON.stringify(stations)),
     );
     t.ok(fs.writeFile.calledWith("_site/trains.json", JSON.stringify(trains)));
     t.ok(fs.writeFile.calledWith("_site/routes.json", JSON.stringify(routes)));
+
+    t.ok(
+      fs.writeFile.calledWith(
+        "_site/routes/route-1.json",
+        JSON.stringify(routes[0]),
+      ),
+    );
+
+    t.ok(
+      fs.writeFile.calledWith(
+        "_site/routes/route-2.json",
+        JSON.stringify(routes[1]),
+      ),
+    );
+
+    t.ok(
+      fs.writeFile.calledWith(
+        "_site/routes/route-3.json",
+        JSON.stringify(routes[2]),
+      ),
+    );
+
+    t.ok(
+      fs.writeFile.calledWith(
+        "_site/routes/route-4.json",
+        JSON.stringify(routes[3]),
+      ),
+    );
   });
 });
