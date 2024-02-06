@@ -13,7 +13,7 @@ export const getStations = async ({
   const stations = await cryptoParse(rawData);
 
   // Map it into a little bit cleaner structure, and keep the original raw data
-  return stations.StationsDataResponse.features.map(
+  return stations?.StationsDataResponse.features.map(
     ({ properties: station }) => ({
       code: station.Code,
       name: station.StationName,

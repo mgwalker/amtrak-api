@@ -82,5 +82,10 @@ export const parse = async (data) => {
 
   // The actual data is encrypted with the private key. The result is always
   // JSON (for our purposes), so go ahead and parse that.
-  return JSON.parse(await decrypt(ciphertext, privateKey));
+  const plaintext = await decrypt(ciphertext, privateKey);
+  try {
+    return JSON.parse(plaintext);
+  } catch (e) {
+    return null;
+  }
 };
