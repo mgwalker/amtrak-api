@@ -119,7 +119,7 @@ const routes = JSON.parse(
 
     train.stations = trainInfo.stations.map((stationInfo) => {
       const station = {
-        name: stationInfo.station.name,
+        name: stationInfo.station?.name,
         code: stationInfo.code,
         status: stationInfo.status,
 
