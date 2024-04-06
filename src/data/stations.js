@@ -12,8 +12,17 @@ export const getStations = async ({
   // Decrypt it.
   const stations = await cryptoParse(rawData);
 
+  // Sometimes Amtrak tells the GitHub action that it's not allowed to access
+  // the site. Perhaps they're shutting this API down because they're not happy
+  // that someone has made their data accessible since they're not willing to
+  // do it, despite being publicly funded.
+  if (stations?.StationsDataResponse?.error) {
+    console.log(stations.StationsDataResponse.error.message);
+    return [];
+  }
+
   // Map it into a little bit cleaner structure, and keep the original raw data
-  return stations?.StationsDataResponse.features.map(
+  return stations?.StationsDataResponse?.features?.map(
     ({ properties: station }) => ({
       code: station.Code,
       name: station.StationName,
