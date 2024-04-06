@@ -260,7 +260,7 @@ const routes = JSON.parse(
 
       info.push(" on ", previous.arrival);
 
-      if (previous.status === "departed") {
+      if (previous.status === "departed" && next) {
         info.push(" and is scheduled to arrive at ", next.name);
         if (next.delay.arrival) {
           info.push(" about ", next.delay.arrival, " late");
