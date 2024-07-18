@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="https://fonts.cdnfonts.com/css/public-sans" rel="stylesheet" />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/uswds/3.6.1/css/uswds.min.css"
+      rel="stylesheet"
+    />
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/uswds/3.6.1/js/uswds-init.min.js"
+      integrity="sha512-O4/iaC7XNMEYqktWqYtH6Rg++++GZAdUMITJVzu0D1X4ckQyXHJOoC4SC4Ivwsr8YMTjhSnDxem0Ac62IQuG1w=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/uswds/3.6.1/js/uswds.min.js"
+      integrity="sha512-gT5GVKxABilDNB0ZN35kjkvYy4GdEpeyuRlf4LSfWEF1jw1ajcFR4U298H7Hu3FgO+pRjbGLAbxzAE5lyvQxuA=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <style type="text/css">
+      html {
+        font-family: "Public Sans";
+      }
+
+      single-train {
+        display: block;
+      }
+
+      train-track {
+        display: flex;
+
+        &.horizontal {
+          border-radius: 2rem;
+          height: 1rem;
+
+          & train-station {
+            & station-dot {
+              margin-top: -0.25rem;
+            }
+          }
+
+          & station-spacer {
+            margin: 0 -0.5rem;
+          }
+        }
+
+        &.vertical {
+          width: 1rem;
+          height: 100%;
+
+          & train-station {
+            & station-dot {
+              margin-left: -0.25rem;
+            }
+          }
+
+          & station-spacer {
+            margin: -0.5rem 0;
+          }
+        }
+
+        & train-station {
+          display: block;
+
+          & station-dot {
+            border-radius: 2rem;
+            display: block;
+            height: 1.5rem;
+            width: 1.5rem;
+            background-color: red;
+          }
+        }
+      }
+    </style>
+  </head>
+  <body class="bg-primary-light padding-0 margin-0">
+    <main class="grid-container">
+      <div
+        class="grid-col-8 grid-offset-2 bg-white padding-top-2 padding-x-2"
+        style="min-height: 100vh"
+      >
+        <h1 class="margin-0">This site is archived</h1>
+        <p>
+          This website previously built itself automatically from Amtrak data,
+          updated about every 20 minutes. However, the Amtrak data source is
+          remarkably flaky and for a hobby project, it isn't worth the amount of
+          naggy emails I get from the automatic build process whenver Amtrak
+          delivers bad data.
+        </p>
+
+        <p>
+          The source code used to generate this site – and the data files that
+          it hosted – is
+          <a href="https://github.com/mgwalker/amtrak-api"
+            >available for free on GitHub</a
+          >. Please feel free to grab it and do with it as you please! If you're
+          curious why I built this thing in the first place, I wrote
+          <a href="https://mgwalker.github.io/blog/amtrak-api/"
+            >a blog post about it in 2023</a
+          >.
+        </p>
+      </div>
+    </main>
+  </body>
+</html>
